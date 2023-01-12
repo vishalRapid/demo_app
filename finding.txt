@@ -1,0 +1,7 @@
+** go mod command is used to setup dependencies for go
+
+** go build is the command to build the project that will run the main file in the folder
+
+** go get <package name> is used to install a package
+
+** use log.fatal to stdout error on console and stop the server
