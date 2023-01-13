@@ -7,7 +7,7 @@ import (
 	"github.com/go-redis/redis"
 )
 
-var client *redis.Client
+var RedisClient *redis.Client
 
 /*
 *
@@ -17,26 +17,26 @@ One for redis url to connect to
 */
 func ConnectToRedis(url string, redisPass string) {
 
-	client = redis.NewClient(&redis.Options{
+	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     url,
 		Password: redisPass,
 		DB:       0,
 	})
 
-	_, err := client.Ping().Result()
+	_, err := RedisClient.Ping().Result()
 	if err != nil {
 		log.Fatal("Error making connection to redis", err)
 	}
 
-	fmt.Println("Database connected..")
+	fmt.Println("Cache connected..")
 }
 
 // setting value to the redis store
 func GetValue(key string) (string, error) {
-	return client.Get(key).Result()
+	return RedisClient.Get(key).Result()
 }
 
 // fetching value from the store
 func SetValue(key string, value string) error {
-	return client.Set(key, value, 0).Err()
+	return RedisClient.Set(key, value, 0).Err()
 }
