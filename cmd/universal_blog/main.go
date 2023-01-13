@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/vishalrana9915/demo_app/pkg/databaseConnector"
 	"github.com/vishalrana9915/demo_app/pkg/redisConnector"
 	"github.com/vishalrana9915/demo_app/pkg/responseHandler"
 	"github.com/vishalrana9915/demo_app/pkg/routes"
@@ -28,8 +29,11 @@ func main() {
 	var redis_url string = os.Getenv("REDIS_URL")
 	var pass string = os.Getenv("REDIS_PASS")
 
-	fmt.Println("Running in debugging mode ==>", gin.IsDebugging())
+	var mongoURI string = os.Getenv("MONGO_URI")
+
 	redisConnector.ConnectToRedis(redis_url, pass)
+
+	databaseConnector.ConnectToDatabase(mongoURI)
 
 	router := gin.Default()
 
