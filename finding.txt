@@ -7,3 +7,5 @@
 ** use log.fatal to stdout error on console and stop the server
 
 ** ShouldBindJson was making the request body blank after use, so we need to use ioutil module and readAll function to read bytes and convert them into json using UnMarshal and after we are done with request , we need to use nopCloser function to reset the request body to its original value
+
+
