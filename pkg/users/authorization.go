@@ -2,12 +2,12 @@ package users
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/vishalrana9915/demo_app/pkg/constant"
 	"github.com/vishalrana9915/demo_app/pkg/users/userInterface"
+	"github.com/vishalrana9915/demo_app/pkg/utils"
 )
 
 // a function handler to take care of user onboarding
@@ -20,5 +20,9 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(body)
+	// hashed password
+	hashedPassword := utils.HashPassword(body.PASSWORD)
+
+	body.PASSWORD = hashedPassword
+
 }
