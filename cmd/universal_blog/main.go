@@ -30,10 +30,11 @@ func main() {
 	var pass string = os.Getenv("REDIS_PASS")
 
 	var mongoURI string = os.Getenv("MONGO_URI")
+	var mongoDB string = os.Getenv("MONGO_DB")
 
 	redisConnector.ConnectToRedis(redis_url, pass)
 
-	databaseConnector.ConnectToDatabase(mongoURI)
+	databaseConnector.Adapter.Connect(mongoURI, mongoDB)
 
 	router := gin.Default()
 
