@@ -8,3 +8,7 @@ var (
 	MISSING_PASSWORD        = "Password is required"
 	INVALID_EMAIL           = "Please check email "
 )
+
+var (
+	USERCOLLECTION = "users"
+)
