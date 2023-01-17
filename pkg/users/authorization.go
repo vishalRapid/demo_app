@@ -23,6 +23,15 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
+	// check if user exist
+	userExist := databaseConnector.CheckUserExist(body.EMAIL)
+
+	if userExist == true {
+		c.JSON(http.StatusBadRequest, gin.H{"error": constant.USER_EXIST})
+		c.Abort()
+		return
+	}
+
 	// hashed password
 	hashedPassword := utils.HashPassword(body.PASSWORD)
 
@@ -35,6 +44,6 @@ func RegisterUser(c *gin.Context) {
 
 	response := databaseConnector.CreateNewUser(body)
 
-	c.JSON(http.StatusOK, gin.H{"message": "User created successfully", "response": response})
+	c.JSON(http.StatusOK, gin.H{"message": constant.SUCCESS, "response": response})
 
 }
