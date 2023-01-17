@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/vishalrana9915/demo_app/pkg/constant"
 	"github.com/vishalrana9915/demo_app/pkg/databaseConnector"
+	"github.com/vishalrana9915/demo_app/pkg/redisConnector"
 	"github.com/vishalrana9915/demo_app/pkg/users/userInterface"
 	"github.com/vishalrana9915/demo_app/pkg/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -23,6 +24,14 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
+	// checking user in cache
+	result := redisConnector.CheckHExist(body.EMAIL)
+
+	if result {
+		c.JSON(http.StatusBadRequest, gin.H{"error": constant.USER_EXIST})
+		c.Abort()
+		return
+	}
 	// check if user exist
 	userExist := databaseConnector.CheckUserExist(body.EMAIL)
 
@@ -43,6 +52,9 @@ func RegisterUser(c *gin.Context) {
 	body.ID = primitive.NewObjectID()
 
 	response := databaseConnector.CreateNewUser(body)
+
+	// setting up value for current user in cache
+	redisConnector.HSetValue(body.EMAIL, "id", string(body.ID.Hex()))
 
 	c.JSON(http.StatusOK, gin.H{"message": constant.SUCCESS, "response": response})
 
