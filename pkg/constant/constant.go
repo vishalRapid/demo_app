@@ -9,6 +9,11 @@ var (
 	INVALID_EMAIL           = "Please check email "
 	USER_EXIST              = "User exist with this email, Try login"
 	SUCCESS                 = "Success"
+	USER_NOT_EXIST          = "Email is not register, try creating an account"
+	INVALID_CREDENTIAL      = "Invalid credentials, Please try again"
+	MISSING_TOKEN           = "Token is required"
+	INVALID_REQUEST         = "Invalid Request"
+	TOKEN_MALFORMED         = "Token is malformed or expired"
 )
 
 var (

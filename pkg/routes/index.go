@@ -22,4 +22,8 @@ func SetupRouter(router *gin.Engine) {
 	//////////////////////////////// User routes //////////////////////////////
 	router.POST("/register", middleware.CheckRequiredFields(), users.RegisterUser)
 
+	router.GET("/login", users.AuthenticateUser)
+
+	router.GET("/profile/me", users.FetchProfile)
+
 }
