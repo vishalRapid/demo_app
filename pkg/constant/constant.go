@@ -19,3 +19,9 @@ var (
 var (
 	USERCOLLECTION = "users"
 )
+
+const (
+	Draft = iota
+	Published
+	Deleted
+)
