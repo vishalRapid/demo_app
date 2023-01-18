@@ -91,6 +91,7 @@ func AuthenticateUser(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
 	// need to find user from db
 	// check if user exist
 	query := bson.D{
