@@ -18,6 +18,7 @@ will take two params
 One for redis url to connect to
 */
 func ConnectToRedis(url string, redisPass string) {
+
 	// Wait for Redis to start up
 	err := try.Do(func(attempt int) (bool, error) {
 		var err error
