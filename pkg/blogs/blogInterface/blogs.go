@@ -10,7 +10,7 @@ type Blog struct {
 	AUTHOR       string    `json:"author" bson:"author"`
 	CHECKSUM     string    `json:"checksum" bson:"checksum"`
 	WORDCOUNT    int       `json:"wordcount" bson:"wordcount"`
-	TAGS         []string  `json:"tags" bson:"tage"`
+	TAGS         []string  `json:"tags" bson:"tags"`
 	CREATEDAT    time.Time `json:"created_at" bson:"created_at"`
 	UPDATEDAT    time.Time `json:"updated_at" bson:"updated_at"`
 	PUBLISHEDAT  time.Time `json:"published_at" bson:"published_at"`

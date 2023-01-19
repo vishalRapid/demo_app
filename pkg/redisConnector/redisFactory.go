@@ -3,8 +3,10 @@ package redisConnector
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/matryer/try"
 )
 
 var RedisClient *redis.Client
@@ -16,16 +18,25 @@ will take two params
 One for redis url to connect to
 */
 func ConnectToRedis(url string, redisPass string) {
-
-	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     url,
-		Password: redisPass,
-		DB:       0,
+	// Wait for Redis to start up
+	err := try.Do(func(attempt int) (bool, error) {
+		var err error
+		RedisClient = redis.NewClient(&redis.Options{
+			Addr:     url,
+			Password: redisPass,
+			DB:       0,
+		})
+		_, err = RedisClient.Ping().Result()
+		if err != nil {
+			log.Println("Error connecting to Redis, retrying...")
+			time.Sleep(10 * time.Second)
+			return attempt < 5, err
+		}
+		return true, nil
 	})
 
-	_, err := RedisClient.Ping().Result()
 	if err != nil {
-		log.Fatal("Error making connection to redis", err)
+		log.Fatalf("Error connecting to Redis: %v", err)
 	}
 
 	fmt.Println("Cache connected..")

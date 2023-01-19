@@ -1,0 +1,28 @@
+version: "3"
+services:
+  redis:
+    image: redis
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - mongodb

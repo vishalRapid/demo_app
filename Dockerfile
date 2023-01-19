@@ -1,4 +1,4 @@
-FROM golang:1.10
+FROM golang:1.17-alpine
 
 # Set the Current Working Directory inside the container
 WORKDIR $GOPATH/src/github.com/vishalrana9915/demo_app
@@ -16,4 +16,6 @@ RUN go install -v ./...
 EXPOSE 9200
 
 # Run the executable
-RUN make dev
+RUN go build -o main cmd/universal_blog/main.go
+
+CMD ["./main"]
