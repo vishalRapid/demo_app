@@ -57,3 +57,15 @@ func CheckUserExist(email string) bool {
 
 	return true
 }
+
+// save blogs record into database
+func CreateNewBlog(data interface{}) interface{} {
+
+	result, err := Adapter.db.Collection(constant.BLOGCOLLECTION).InsertOne(context.TODO(), data)
+
+	if err != nil {
+		panic(error.Error(err))
+	}
+
+	return result
+}

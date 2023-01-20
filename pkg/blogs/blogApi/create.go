@@ -11,6 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/vishalrana9915/demo_app/pkg/blogs/blogInterface"
 	"github.com/vishalrana9915/demo_app/pkg/constant"
+	"github.com/vishalrana9915/demo_app/pkg/databaseConnector"
+	"github.com/vishalrana9915/demo_app/pkg/redisConnector"
 	"github.com/vishalrana9915/demo_app/pkg/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -52,8 +54,7 @@ func CreateBlog(c *gin.Context) {
 	// converting user id for author
 	userID, err_author := primitive.ObjectIDFromHex(currentUserId.(string))
 	if err_author != nil {
-		fmt.Println("Error:", err_author)
-		return
+		panic(err_author)
 	}
 
 	blogPayload.AUTHOR = userID
@@ -74,12 +75,14 @@ func CreateBlog(c *gin.Context) {
 	if blogPayload.READTIME == 0 {
 		blogPayload.READTIME = 1
 	}
-	fmt.Println(blogPayload)
 
 	if blogPayload.STATUS == constant.Published {
 		fmt.Println("we need to publish this blog")
-
+		go redisConnector.AddSet("tags", blogPayload.TAGS)
 	}
+
+	// save blog in database
+	go databaseConnector.CreateNewBlog(blogPayload)
 
 	c.JSON(
 		http.StatusOK,

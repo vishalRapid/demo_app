@@ -20,6 +20,7 @@ var (
 
 var (
 	USERCOLLECTION = "users"
+	BLOGCOLLECTION = "blogs"
 )
 
 const (
