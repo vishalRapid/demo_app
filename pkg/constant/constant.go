@@ -16,6 +16,7 @@ var (
 	TOKEN_MALFORMED         = "Token is malformed or expired"
 	UNAUTH_REQUEST          = "UnAuthorized Request"
 	MISSING_TITLE           = "Please provide title for blog"
+	UPLOAD_FAILED           = "Upload failed, Please try after sometime"
 )
 
 var (
