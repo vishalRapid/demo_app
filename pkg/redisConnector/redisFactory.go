@@ -90,3 +90,27 @@ func CheckHExist(hash string) bool {
 		return false
 	}
 }
+
+// add value to set
+func AddSet(set string, value []string) (error, string) {
+
+	for _, val := range value {
+		_, err := RedisClient.SAdd(set, val).Result()
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return nil, "Success"
+}
+
+// function to fetch all values from set
+func GetAllSet(set string) []string {
+	// Get all values in the set
+	values, err := RedisClient.SMembers(set).Result()
+	if err != nil {
+		panic(err)
+	}
+
+	return values
+}

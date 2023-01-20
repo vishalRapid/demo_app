@@ -5,8 +5,10 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vishalrana9915/demo_app/pkg/blogs/blogApi"
 	"github.com/vishalrana9915/demo_app/pkg/users"
 	"github.com/vishalrana9915/demo_app/pkg/users/middleware"
+	"github.com/vishalrana9915/demo_app/pkg/utils/commonMiddleware"
 )
 
 // Setting up router for the app
@@ -25,5 +27,9 @@ func SetupRouter(router *gin.Engine) {
 	router.GET("/login", users.AuthenticateUser)
 
 	router.GET("/profile/me", users.FetchProfile)
+
+	// blogs routes
+
+	router.POST("/blogs/create", commonMiddleware.AuthGuard(), blogApi.CreateBlog)
 
 }
