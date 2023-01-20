@@ -14,6 +14,8 @@ var (
 	MISSING_TOKEN           = "Token is required"
 	INVALID_REQUEST         = "Invalid Request"
 	TOKEN_MALFORMED         = "Token is malformed or expired"
+	UNAUTH_REQUEST          = "UnAuthorized Request"
+	MISSING_TITLE           = "Please provide title for blog"
 )
 
 var (
