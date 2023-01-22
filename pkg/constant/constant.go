@@ -17,6 +17,7 @@ var (
 	UNAUTH_REQUEST          = "UnAuthorized Request"
 	MISSING_TITLE           = "Please provide title for blog"
 	MISSING_SLUG            = "Missing Slug"
+	UPLOAD_FAILED           = "Upload failed, Please try after sometime"
 )
 
 var (
