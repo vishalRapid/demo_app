@@ -8,6 +8,7 @@ import (
 	"github.com/vishalrana9915/demo_app/pkg/blogs/blogApi"
 	"github.com/vishalrana9915/demo_app/pkg/users"
 	"github.com/vishalrana9915/demo_app/pkg/users/middleware"
+	"github.com/vishalrana9915/demo_app/pkg/utils"
 	"github.com/vishalrana9915/demo_app/pkg/utils/commonMiddleware"
 )
 
@@ -17,6 +18,9 @@ func SetupRouter(router *gin.Engine) {
 	proxiers := os.Getenv("TRUSTED_PROXIES")
 
 	router.SetTrustedProxies([]string{proxiers})
+
+	router.Use(utils.AssignRequestID)
+
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "PONG")
 	})
@@ -31,5 +35,7 @@ func SetupRouter(router *gin.Engine) {
 	// blogs routes
 
 	router.POST("/blogs/create", commonMiddleware.AuthGuard(), blogApi.CreateBlog)
+
+	router.GET("/blogs/:slug", blogApi.FetchBlog)
 
 }
