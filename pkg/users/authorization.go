@@ -2,7 +2,6 @@ package users
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -53,23 +52,31 @@ func RegisterUser(c *gin.Context) {
 	body.LASTUPDATEDAT = time.Now()
 	body.ID = primitive.NewObjectID()
 
-	response := databaseConnector.CreateNewUser(body)
+	databaseConnector.CreateNewUser(body)
 
 	// setting up value for current user in cache
 	go redisConnector.HSetValue(body.EMAIL, "id", string(body.ID.Hex()))
 
+	responseUser := userInterface.UserProfile{
+		ID:            body.ID,
+		NAME:          body.NAME,
+		EMAIL:         body.EMAIL,
+		ISVERIFIED:    body.ISVERIFIED,
+		CREATEDAT:     body.CREATEDAT,
+		LASTUPDATEDAT: body.LASTUPDATEDAT,
+	}
+
 	// Convert struct to JSON
-	userJSON, err_json := json.Marshal(body)
+	userJSON, err_json := json.Marshal(responseUser)
 
 	if err_json != nil {
-		fmt.Println(err_json)
 		panic(err_json)
 	}
 
 	// setting up value in redis
 	go redisConnector.SetValue(body.ID.Hex(), string(userJSON))
 
-	c.JSON(http.StatusCreated, gin.H{"message": constant.SUCCESS, "response": response})
+	c.JSON(http.StatusCreated, gin.H{"message": constant.SUCCESS, "response": responseUser})
 
 }
 
@@ -157,7 +164,6 @@ func FetchProfile(c *gin.Context) {
 	var userInfo userInterface.Users
 	err_marshal := json.Unmarshal([]byte(userResponse), &userInfo)
 	if err_marshal != nil {
-		fmt.Println(err_marshal)
 		c.JSON(http.StatusUnauthorized, gin.H{"message": constant.INVALID_REQUEST})
 		c.Abort()
 		return
@@ -173,4 +179,63 @@ func FetchProfile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": constant.SUCCESS,
 		"profile": responseUser})
+}
+
+// UpdateTags will update tags for current user
+func UpdateTags(c *gin.Context) {
+	// checking user required auth
+	userId, exist := c.Get("userId")
+	if !exist {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "userId not found in context"})
+		return
+	}
+
+	var profileTags userInterface.UserTags
+
+	decoder := json.NewDecoder(c.Request.Body)
+
+	if err := decoder.Decode(&profileTags); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": constant.PARSING_ERROR})
+		c.Abort()
+		return
+	}
+
+	str, ok := userId.(string)
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": constant.PARSING_ERROR})
+		c.Abort()
+		return
+	}
+
+	objId, err_parsing := primitive.ObjectIDFromHex(str)
+
+	if err_parsing != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": constant.PARSING_ERROR})
+		c.Abort()
+		return
+	}
+
+	query := bson.M{
+		"_id": objId,
+	}
+
+	update := bson.M{
+		"$set": bson.M{"tags": profileTags.TAGS},
+	}
+
+	_, err_update := databaseConnector.UpdateUser(query, update)
+
+	if err_update != "" {
+
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err_update,
+		})
+		c.Abort()
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constant.SUCCESS,
+	})
+
 }

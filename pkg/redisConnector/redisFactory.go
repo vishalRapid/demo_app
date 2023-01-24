@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/matryer/try"
+	"github.com/vishalrana9915/demo_app/pkg/constant"
 )
 
 var RedisClient *redis.Client
@@ -63,7 +64,6 @@ func HSetValue(hash string, key string, value string) {
 
 // fetch key from hget
 func HGetValue(hash string, key string) string {
-	fmt.Println(hash, key, RedisClient)
 	result, err := RedisClient.HGet(hash, key).Result()
 
 	if err != nil {
@@ -78,7 +78,6 @@ func CheckHExist(hash string) bool {
 	// Check if a hash exists
 	exists, err := RedisClient.Exists(hash).Result()
 	if err != nil {
-		fmt.Println(err)
 		panic(err)
 
 	}
@@ -113,4 +112,53 @@ func GetAllSet(set string) []string {
 	}
 
 	return values
+}
+
+// fetch all sorted tags from store
+func GetAllTags(setName string, starting int64, ending int64) []string {
+
+	if starting <= 0 {
+		starting = 0
+	}
+
+	if ending <= 0 {
+		ending = -1
+	}
+
+	result, err := RedisClient.ZRange(setName, starting, ending).Result()
+	if err != nil {
+		panic(err)
+	}
+
+	return result
+
+}
+
+// add record to sorted sets
+func SetTags(setName string, tag string) {
+
+	_, err := RedisClient.ZScore(setName, tag).Result()
+
+	// checking if tag exist previously or not
+	if err != nil {
+		err_aff := RedisClient.ZAdd(setName, redis.Z{Score: 1, Member: tag}).Err()
+		if err_aff != nil {
+			panic(err_aff)
+		}
+	}
+
+	// key exist
+	_, err_add := RedisClient.ZIncrBy(setName, 1, tag).Result()
+
+	if err_add != nil {
+		panic(err_add)
+	}
+
+}
+
+// multiple sorted tags can be added at once
+func MultipleSortedTags(tags []string) {
+	for _, val := range tags {
+		SetTags(constant.SORTED_TAGS, val)
+	}
 }

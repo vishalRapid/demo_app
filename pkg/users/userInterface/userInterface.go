@@ -12,6 +12,7 @@ type Users struct {
 	EMAIL         string             `json:"email"  bson:"email" binding:"required"`
 	PASSWORD      string             `json:"password"  bson:"password" binding:"required"`
 	ISVERIFIED    bool               `json:"isVerified" bson:"isVerified"`
+	TAGS          []string           `json:"tags" bson:"tags"`
 	CREATEDAT     time.Time          `json:"created_at" bson:"created_at"`
 	LASTUPDATEDAT time.Time          `json:"last_updated_at" bson:"last_updated_at"`
 }
@@ -34,4 +35,8 @@ type UserProfile struct {
 	ISVERIFIED    bool               `json:"isVerified" bson:"isVerified"`
 	CREATEDAT     time.Time          `json:"created_at" bson:"created_at"`
 	LASTUPDATEDAT time.Time          `json:"last_updated_at" bson:"last_updated_at"`
+}
+
+type UserTags struct {
+	TAGS []string `json:"tags" bson:"tags"`
 }
