@@ -57,3 +57,20 @@ func CheckUserExist(email string) bool {
 
 	return true
 }
+
+// find user from query
+func UpdateUser(query bson.M, update bson.M) (userInterface.Users, string) {
+
+	var userInfo userInterface.Users
+	err := Adapter.db.Collection(constant.USERCOLLECTION).FindOneAndUpdate(context.TODO(), query, update).Decode(&userInfo)
+
+	if err != nil {
+
+		if err == mongo.ErrNoDocuments {
+			// This error means your query did not match any documents.
+			return userInterface.Users{}, constant.USER_NOT_EXIST
+		}
+		panic(err)
+	}
+	return userInfo, ""
+}

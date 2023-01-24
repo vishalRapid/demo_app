@@ -78,7 +78,7 @@ func CreateBlog(c *gin.Context) {
 
 	if blogPayload.STATUS == constant.Published {
 		fmt.Println("we need to publish this blog")
-		go redisConnector.AddSet("tags", blogPayload.TAGS)
+		go redisConnector.MultipleSortedTags(blogPayload.TAGS)
 	}
 
 	// save blog in database

@@ -18,11 +18,17 @@ var (
 	MISSING_TITLE           = "Please provide title for blog"
 	MISSING_SLUG            = "Missing Slug"
 	UPLOAD_FAILED           = "Upload failed, Please try after sometime"
+	INTERNAL_SERVER_ERR     = "Internal server error"
+	FAILED_REQUEST          = "Failed request, Please try again later"
 )
 
 var (
 	USERCOLLECTION = "users"
 	BLOGCOLLECTION = "blogs"
+)
+
+var (
+	SORTED_TAGS = "sorted_tags"
 )
 
 const (
