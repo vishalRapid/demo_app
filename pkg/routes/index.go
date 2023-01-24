@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/vishalrana9915/demo_app/pkg/blogs/blogApi"
+	"github.com/vishalrana9915/demo_app/pkg/blogs/tagsApi"
 	"github.com/vishalrana9915/demo_app/pkg/mediaUpload"
 	"github.com/vishalrana9915/demo_app/pkg/users"
 	"github.com/vishalrana9915/demo_app/pkg/users/middleware"
@@ -40,6 +41,8 @@ func SetupRouter(router *gin.Engine) {
 	router.POST("/blogs/create", commonMiddleware.AuthGuard(), blogApi.CreateBlog)
 
 	router.GET("/blogs/:slug", blogApi.FetchBlog)
+
+	router.GET("/tags", tagsApi.FetchTags)
 
 	// upload media
 
