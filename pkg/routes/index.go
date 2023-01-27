@@ -44,6 +44,8 @@ func SetupRouter(router *gin.Engine) {
 
 	router.GET("/tags", tagsApi.FetchTags)
 
+	router.GET("/blogs/timeline", commonMiddleware.OptionalAuthGuard(), blogApi.FetchBlogs)
+
 	// upload media
 
 	router.PUT("/media/upload", commonMiddleware.AuthGuard(), mediaUpload.UploadMedia)

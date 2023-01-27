@@ -36,3 +36,7 @@ const (
 	Published
 	Deleted
 )
+
+const (
+	Recommendation = "recommendation"
+)
