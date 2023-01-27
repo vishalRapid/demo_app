@@ -30,3 +30,7 @@
 
 - Run the app
   `docker run -p 9200:9200 notes_app`
+
+## Architecture
+
+<img src="./assets/architecture.jpeg">
