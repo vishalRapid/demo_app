@@ -62,3 +62,48 @@ func AuthGuard() gin.HandlerFunc {
 		c.Set("userId", userId)
 	}
 }
+
+// optional handler for public api to find user information
+func OptionalAuthGuard() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("Authorization")
+		if token != "" {
+			// need to find user information
+			userId, err := utils.ValidateToken(token)
+
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{
+					"error": constant.UNAUTH_REQUEST,
+				})
+				c.Abort()
+				return
+			}
+
+			// fetch userId details from database
+
+			objectID, err_objectId := primitive.ObjectIDFromHex(userId)
+			if err_objectId != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{
+					"error": constant.UNAUTH_REQUEST,
+				})
+				c.Abort()
+				return
+			}
+			// check if user exist
+			query := bson.D{
+				{
+					"_id", objectID,
+				},
+			}
+			_, errr := databaseConnector.FindUser(query)
+			if errr != "" {
+				c.JSON(http.StatusBadRequest, gin.H{"error": errr})
+				c.Abort()
+				return
+			}
+
+			c.Set("userId", userId)
+		}
+
+	}
+}
