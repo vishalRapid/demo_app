@@ -7,7 +7,7 @@ import (
 )
 
 type Blog struct {
-	ID           primitive.ObjectID `json:"id" bson:"id"`
+	ID           primitive.ObjectID `json:"_id" bson:"_id"`
 	SLUG         string             `json:"slug" bson:"slug"`
 	TITLE        string             `json:"title" bson:"title"`
 	CONTENT      string             `json:"content" bson:"content"`

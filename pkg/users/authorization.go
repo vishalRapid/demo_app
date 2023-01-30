@@ -2,6 +2,7 @@ package users
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -233,6 +234,10 @@ func UpdateTags(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	tags, _ := json.Marshal(profileTags.TAGS)
+	// setting up value in redis
+	go redisConnector.SetValue(fmt.Sprintf("user_tags_%s", str), string(tags))
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": constant.SUCCESS,

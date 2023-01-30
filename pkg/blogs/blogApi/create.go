@@ -60,7 +60,6 @@ func CreateBlog(c *gin.Context) {
 	blogPayload.AUTHOR = userID
 	blogPayload.CREATEDAT = time.Now()
 	blogPayload.UPDATEDAT = time.Now()
-	blogPayload.CREATEDAT = time.Now()
 
 	slug, err_slug := utils.MakeSlug(blogPayload.TITLE)
 
@@ -78,6 +77,8 @@ func CreateBlog(c *gin.Context) {
 
 	if blogPayload.STATUS == constant.Published {
 		fmt.Println("we need to publish this blog")
+		blogPayload.PUBLISHEDAT = time.Now()
+
 		go redisConnector.MultipleSortedTags(blogPayload.TAGS)
 	}
 

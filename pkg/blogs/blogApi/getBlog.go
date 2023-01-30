@@ -20,10 +20,9 @@ func FetchBlog(c *gin.Context) {
 			"message": constant.MISSING_SLUG,
 		})
 	}
-	query := bson.D{
-		{
-			"slug", slug,
-		},
+	query := bson.M{
+		"slug":   slug,
+		"status": constant.Published,
 	}
 
 	// database query to fetch blog details
