@@ -105,3 +105,20 @@ func FetchBlogs(filter interface{}, page string, limit string) []blogInterface.B
 	return blogs
 
 }
+
+// update blog
+func UpdateBlog(query bson.M, update bson.M) (blogInterface.Blog, string) {
+
+	var blogInfo blogInterface.Blog
+	err := Adapter.db.Collection(constant.BLOGCOLLECTION).FindOneAndUpdate(context.TODO(), query, update).Decode(&blogInfo)
+
+	if err != nil {
+
+		if err == mongo.ErrNoDocuments {
+			// This error means your query did not match any documents.
+			return blogInterface.Blog{}, constant.BLOG_NOT_FOUND
+		}
+		panic(err)
+	}
+	return blogInfo, ""
+}

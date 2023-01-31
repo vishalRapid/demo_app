@@ -23,3 +23,26 @@ type Blog struct {
 	STATUS       int                `json:"status" bson:"status"`
 	FEATUREIMAGE string             `json:"featureImage" bson:"featureImage"`
 }
+
+type UpdateBlog struct {
+	TITLE        string   `json:"title" bson:"title"`
+	CONTENT      string   `json:"content" bson:"content"`
+	BANNER       string   `json:"banner" bson:"banner"`
+	TAGS         []string `json:"tags" bson:"tags"`
+	STATUS       int      `json:"status" bson:"status"`
+	FEATUREIMAGE string   `json:"featureImage" bson:"featureImage"`
+}
+
+type DatabaseBlog struct {
+	SLUG         string    `json:"slug" bson:"slug"`
+	TITLE        string    `json:"title" bson:"title"`
+	CONTENT      string    `json:"content" bson:"content"`
+	BANNER       string    `json:"banner" bson:"banner"`
+	CHECKSUM     string    `json:"checksum" bson:"checksum"`
+	WORDCOUNT    int       `json:"wordcount" bson:"wordcount"`
+	READTIME     int       `json:"readTime" bson:"readTime"`
+	TAGS         []string  `json:"tags" bson:"tags"`
+	PUBLISHEDAT  time.Time `json:"published_at" bson:"published_at"`
+	STATUS       int       `json:"status" bson:"status"`
+	FEATUREIMAGE string    `json:"featureImage" bson:"featureImage"`
+}
