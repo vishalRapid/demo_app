@@ -6,9 +6,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/vishalrana9915/demo_app/pkg/blogs/blogApi"
+	"github.com/vishalrana9915/demo_app/pkg/blogs/tagsApi"
 	"github.com/vishalrana9915/demo_app/pkg/mediaUpload"
 	"github.com/vishalrana9915/demo_app/pkg/users"
 	"github.com/vishalrana9915/demo_app/pkg/users/middleware"
+	"github.com/vishalrana9915/demo_app/pkg/utils"
 	"github.com/vishalrana9915/demo_app/pkg/utils/commonMiddleware"
 )
 
@@ -18,6 +20,9 @@ func SetupRouter(router *gin.Engine) {
 	proxiers := os.Getenv("TRUSTED_PROXIES")
 
 	router.SetTrustedProxies([]string{proxiers})
+
+	router.Use(utils.AssignRequestID)
+
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "PONG")
 	})
@@ -29,9 +34,19 @@ func SetupRouter(router *gin.Engine) {
 
 	router.GET("/profile/me", users.FetchProfile)
 
+	router.PUT("/profile/tags", commonMiddleware.AuthGuard(), users.UpdateTags)
+
 	// blogs routes
 
 	router.POST("/blogs/create", commonMiddleware.AuthGuard(), blogApi.CreateBlog)
+
+	router.PUT("/blogs/:slug", commonMiddleware.AuthGuard(), blogApi.UpdateBlog)
+
+	router.GET("/blogs/:slug", blogApi.FetchBlog)
+
+	router.GET("/tags", tagsApi.FetchTags)
+
+	router.GET("/blogs/timeline", commonMiddleware.OptionalAuthGuard(), blogApi.FetchBlogs)
 
 	// upload media
 

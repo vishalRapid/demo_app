@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 	"github.com/vishalrana9915/demo_app/pkg/constant"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -22,7 +24,6 @@ func HashPassword(password string) string {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Hashed password:", string(hashedPassword))
 	return string(hashedPassword)
 }
 
@@ -111,4 +112,11 @@ func MakeSlug(title string) (string, error) {
 
 	return slug, nil
 
+}
+
+// setting up Request id for each request
+func AssignRequestID(c *gin.Context) {
+	requestID := uuid.NewV4().String()
+	c.Set("requestID", requestID)
+	c.Next()
 }

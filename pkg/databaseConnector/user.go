@@ -58,14 +58,19 @@ func CheckUserExist(email string) bool {
 	return true
 }
 
-// save blogs record into database
-func CreateNewBlog(data interface{}) interface{} {
+// find user from query
+func UpdateUser(query bson.M, update bson.M) (userInterface.Users, string) {
 
-	result, err := Adapter.db.Collection(constant.BLOGCOLLECTION).InsertOne(context.TODO(), data)
+	var userInfo userInterface.Users
+	err := Adapter.db.Collection(constant.USERCOLLECTION).FindOneAndUpdate(context.TODO(), query, update).Decode(&userInfo)
 
 	if err != nil {
-		panic(error.Error(err))
-	}
 
-	return result
+		if err == mongo.ErrNoDocuments {
+			// This error means your query did not match any documents.
+			return userInterface.Users{}, constant.USER_NOT_EXIST
+		}
+		panic(err)
+	}
+	return userInfo, ""
 }
