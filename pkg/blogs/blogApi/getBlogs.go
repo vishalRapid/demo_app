@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vishalrana9915/demo_app/pkg/blogs/blogsUtils"
 	"github.com/vishalrana9915/demo_app/pkg/constant"
 	"github.com/vishalrana9915/demo_app/pkg/databaseConnector"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,7 +15,7 @@ import (
 // recommendation or based out of a tag
 func FetchBlogs(c *gin.Context) {
 
-	_, exist := c.Get("userId")
+	userId, exist := c.Get("userId")
 
 	querySetting := c.Request.URL.Query().Get("search")
 	page := c.Request.URL.Query().Get("page")
@@ -45,8 +46,21 @@ func FetchBlogs(c *gin.Context) {
 		searchCriteria = querySetting
 	}
 
+	if searchCriteria == constant.Recommendation {
+		blogs := blogsUtils.GetRecommendedBlogs(userId.(string), page, limit)
+		c.JSON(
+			http.StatusOK,
+			gin.H{
+				"message": constant.SUCCESS,
+				"blogs":   blogs,
+			},
+		)
+		return
+	}
+
 	query := bson.M{
-		"tags": searchCriteria,
+		"tags":   searchCriteria,
+		"status": constant.Published,
 	}
 
 	blogs := databaseConnector.FetchBlogs(query, page, limit)

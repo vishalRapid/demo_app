@@ -20,6 +20,7 @@ var (
 	UPLOAD_FAILED           = "Upload failed, Please try after sometime"
 	INTERNAL_SERVER_ERR     = "Internal server error"
 	FAILED_REQUEST          = "Failed request, Please try again later"
+	BLOG_NOT_FOUND          = "Unable to find blog"
 )
 
 var (

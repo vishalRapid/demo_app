@@ -7,8 +7,8 @@ import (
 
 	"github.com/vishalrana9915/demo_app/pkg/blogs/blogInterface"
 	"github.com/vishalrana9915/demo_app/pkg/constant"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // save blogs record into database
@@ -61,11 +61,27 @@ func FetchBlogs(filter interface{}, page string, limit string) []blogInterface.B
 	// Calculate the skip value
 	skip := (page_no - 1) * limit_no
 
-	findOptions := options.Find().SetSkip(int64(skip)).SetLimit(int64(limit_no))
+	pipeline := []bson.M{
+		{
+			"$match": filter,
+		},
+		{
+			"$sort": bson.M{
+				"published_at": -1,
+			},
+		},
+		{
+			"$skip": int64(skip),
+		},
+		{
+			"$limit": int64(limit_no),
+		},
+	}
 
-	cur, err := Adapter.db.Collection(constant.BLOGCOLLECTION).Find(ctx, filter, findOptions)
+	cur, err := Adapter.db.Collection(constant.BLOGCOLLECTION).Aggregate(ctx, pipeline)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
+
 	}
 
 	defer cur.Close(ctx)
@@ -88,4 +104,21 @@ func FetchBlogs(filter interface{}, page string, limit string) []blogInterface.B
 
 	return blogs
 
+}
+
+// update blog
+func UpdateBlog(query bson.M, update bson.M) (blogInterface.Blog, string) {
+
+	var blogInfo blogInterface.Blog
+	err := Adapter.db.Collection(constant.BLOGCOLLECTION).FindOneAndUpdate(context.TODO(), query, update).Decode(&blogInfo)
+
+	if err != nil {
+
+		if err == mongo.ErrNoDocuments {
+			// This error means your query did not match any documents.
+			return blogInterface.Blog{}, constant.BLOG_NOT_FOUND
+		}
+		panic(err)
+	}
+	return blogInfo, ""
 }
