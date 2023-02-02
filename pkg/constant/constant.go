@@ -21,6 +21,7 @@ var (
 	INTERNAL_SERVER_ERR     = "Internal server error"
 	FAILED_REQUEST          = "Failed request, Please try again later"
 	BLOG_NOT_FOUND          = "Unable to find blog"
+	ERROR_UPDATE            = "Error updating user profile"
 )
 
 var (
