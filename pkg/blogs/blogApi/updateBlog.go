@@ -23,7 +23,7 @@ func UpdateBlog(c *gin.Context) {
 	// checking user required auth
 	currentUserId, exist := c.Get("userId")
 
-	slug := c.Param("slug")
+	id := c.Param("id")
 
 	if !exist {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "userId not found in context"})
@@ -40,6 +40,7 @@ func UpdateBlog(c *gin.Context) {
 		return
 	}
 
+	// user id serialization
 	userID, err_author := primitive.ObjectIDFromHex(currentUserId.(string))
 	if err_author != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": constant.PARSING_ERROR})
@@ -47,9 +48,17 @@ func UpdateBlog(c *gin.Context) {
 		return
 	}
 
+	// blog id serialization
+	blogId, err_blog_id := primitive.ObjectIDFromHex(id)
+	if err_blog_id != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": constant.PARSING_ERROR})
+		c.Abort()
+		return
+	}
+
 	// fetch blog from database
 	query := bson.M{
-		"slug":   slug,
+		"_id":    blogId,
 		"author": userID,
 	}
 
