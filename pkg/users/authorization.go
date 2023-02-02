@@ -244,3 +244,57 @@ func UpdateTags(c *gin.Context) {
 	})
 
 }
+
+// function to update profile for a user
+func UpdateProfile(c *gin.Context) {
+	userId, exist := c.Get("userId")
+
+	if !exist {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "userId not found in context"})
+		return
+	}
+
+	// serialise update profile interface
+	var userProfile userInterface.UpdateProfile
+	decoder := json.NewDecoder(c.Request.Body)
+
+	if err := decoder.Decode(&userProfile); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": constant.INVALID_REQUEST,
+		})
+		return
+	}
+
+	// serialization
+	id, err_parsing := primitive.ObjectIDFromHex(userId.(string))
+
+	if err_parsing != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": constant.INVALID_REQUEST,
+		})
+		return
+	}
+	// need to update latest information
+
+	query := bson.M{
+		"_id": id,
+	}
+
+	update := bson.M{
+		"$set": userProfile,
+	}
+
+	_, err_update := databaseConnector.UpdateUser(query, update)
+
+	if err_update != "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": constant.ERROR_UPDATE,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constant.SUCCESS,
+	})
+
+}
