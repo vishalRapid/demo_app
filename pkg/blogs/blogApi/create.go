@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/teris-io/shortid"
+	"github.com/vishalrana9915/demo_app/pkg/algolia"
 	"github.com/vishalrana9915/demo_app/pkg/blogs/blogInterface"
 	"github.com/vishalrana9915/demo_app/pkg/constant"
 	"github.com/vishalrana9915/demo_app/pkg/databaseConnector"
@@ -34,15 +36,13 @@ func CreateBlog(c *gin.Context) {
 
 	// decode request body
 	if err := decoder.Decode(&blogPayload); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": constant.PARSING_ERROR})
-		c.Abort()
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": constant.PARSING_ERROR})
 		return
 	}
 
 	if blogPayload.TITLE == "" {
 		fmt.Println("NO need to store as no title is there")
-		c.JSON(http.StatusBadRequest, gin.H{"error": constant.MISSING_TITLE})
-		c.Abort()
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": constant.MISSING_TITLE})
 		return
 	}
 
@@ -57,6 +57,8 @@ func CreateBlog(c *gin.Context) {
 		panic(err_author)
 	}
 
+	objectId, _ := shortid.Generate()
+	blogPayload.OBJECTID = objectId
 	blogPayload.AUTHOR = userID
 	blogPayload.CREATEDAT = time.Now()
 	blogPayload.UPDATEDAT = time.Now()
@@ -64,8 +66,7 @@ func CreateBlog(c *gin.Context) {
 	slug, err_slug := utils.MakeSlug(blogPayload.TITLE)
 
 	if err_slug != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": constant.PARSING_ERROR})
-		c.Abort()
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": constant.PARSING_ERROR})
 		return
 	}
 
@@ -85,7 +86,10 @@ func CreateBlog(c *gin.Context) {
 	// save blog in database
 	go databaseConnector.CreateNewBlog(blogPayload)
 
-	c.JSON(
+	// save blog indexing
+	go algolia.SaveBlogsData([]blogInterface.Blog{blogPayload})
+
+	c.AbortWithStatusJSON(
 		http.StatusOK,
 		gin.H{"data": blogPayload},
 	)

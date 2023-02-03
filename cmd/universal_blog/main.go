@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/vishalrana9915/demo_app/pkg/algolia"
 	"github.com/vishalrana9915/demo_app/pkg/databaseConnector"
 	"github.com/vishalrana9915/demo_app/pkg/redisConnector"
 	"github.com/vishalrana9915/demo_app/pkg/responseHandler"
@@ -35,6 +36,9 @@ func main() {
 	redisConnector.ConnectToRedis(redis_url, pass)
 
 	databaseConnector.Adapter.Connect(mongoURI, mongoDB)
+
+	// setup search
+	algolia.Adapter.SetupAlgolia()
 
 	router := gin.Default()
 
