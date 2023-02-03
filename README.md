@@ -33,4 +33,4 @@
 
 ## Architecture
 
-<img src="./assets/architecture.jpeg">
+<img src="assets/architecture.jpeg">
