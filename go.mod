@@ -3,6 +3,7 @@ module github.com/vishalrana9915/demo_app
 go 1.19
 
 require (
+	github.com/algolia/algoliasearch-client-go/v3 v3.26.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/cloudinary/cloudinary-go v1.7.0 // indirect
 	github.com/cloudinary/cloudinary-go/v2 v2.2.0 // indirect
@@ -32,6 +33,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
+	github.com/teris-io/shortid v0.0.0-20220617161101-71ec9f2aa569 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
