@@ -33,4 +33,4 @@
 
 ## Architecture
 
-<img src="./assets/architecture.jpeg">
+![ScreenShot](/assets/architecture.jpeg)
