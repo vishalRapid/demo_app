@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
 	"github.com/vishalrana9915/demo_app/pkg/algolia"
+	"github.com/vishalrana9915/demo_app/pkg/broker"
 	"github.com/vishalrana9915/demo_app/pkg/databaseConnector"
 	"github.com/vishalrana9915/demo_app/pkg/ratelimiter"
 	"github.com/vishalrana9915/demo_app/pkg/redisConnector"
@@ -41,6 +42,11 @@ func main() {
 
 	// setup search
 	algolia.Adapter.SetupAlgolia()
+
+	// making connection to the broker
+	broker.SetupBroker()
+
+	defer broker.Connections.NotificationWriter.Close()
 
 	router := gin.Default()
 
