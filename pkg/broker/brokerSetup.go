@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/segmentio/kafka-go"
 )
@@ -23,19 +22,17 @@ func SetupBroker() {
 	notificationBroker := os.Getenv("BROKER_NOTIFICATIONS")
 	brokers := os.Getenv("BROKER_HOST")
 
-	brokerUrls := strings.Split(brokers, ",")
-
 	clientId := os.Getenv("BROKER_CLIENT_ID")
 
-	ConfigureNotificationBroker(brokerUrls, clientId, notificationBroker)
+	ConfigureNotificationBroker(brokers, clientId, notificationBroker)
 
 }
 
 // configuring notifications broker  topic connection
-func ConfigureNotificationBroker(kafkaBrokerUrls []string, clientId string, topic string) {
+func ConfigureNotificationBroker(kafkaBrokerUrls string, clientId string, topic string) {
 
 	fmt.Println(kafkaBrokerUrls, clientId, topic)
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", topic, 0)
+	conn, err := kafka.DialLeader(context.Background(), "tcp", kafkaBrokerUrls, topic, 0)
 	if err != nil {
 		log.Fatal("failed to dial leader:", err)
 	}
