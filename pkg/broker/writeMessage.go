@@ -1,19 +1,19 @@
 package broker
 
 import (
-	"context"
 	"time"
 
 	"github.com/segmentio/kafka-go"
 )
 
 // push new message to new topic
-func Push(parent context.Context, key, value []byte) (err error) {
-	message := kafka.Message{
-		Key:   key,
-		Value: value,
-		Time:  time.Now(),
-	}
+func PushData(connection *kafka.Conn, message string) {
+	connection.SetWriteDeadline(time.Now().Add(10 * time.Second))
+	_, err := connection.WriteMessages(
+		kafka.Message{Value: []byte(message)},
+	)
 
-	return writer.WriteMessages(parent, message)
+	if err != nil {
+		panic(err)
+	}
 }

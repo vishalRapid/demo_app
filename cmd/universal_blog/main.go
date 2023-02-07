@@ -46,7 +46,8 @@ func main() {
 	// making connection to the broker
 	broker.SetupBroker()
 
-	defer broker.Connections.NotificationWriter.Close()
+	// closing broker connection
+	defer broker.Connections.NotificationConn.Close()
 
 	router := gin.Default()
 

@@ -1,13 +1,13 @@
 package broker
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/segmentio/kafka-go"
-	"github.com/segmentio/kafka-go/snappy"
 )
 
 var writer *kafka.Writer
@@ -15,67 +15,30 @@ var writer *kafka.Writer
 var Connections = connectionVariables{}
 
 type connectionVariables struct {
-	NotificationWriter *kafka.Writer
-
-	AlertWriter *kafka.Writer
+	NotificationConn *kafka.Conn
 }
 
 // setting up broker for the system
 func SetupBroker() {
 	notificationBroker := os.Getenv("BROKER_NOTIFICATIONS")
-	// alertBroker := os.Getenv("BROKER_ALERT")
 	brokers := os.Getenv("BROKER_HOST")
 
 	brokerUrls := strings.Split(brokers, ",")
 
 	clientId := os.Getenv("BROKER_CLIENT_ID")
 
-	fmt.Println("Setting up connection to the broker")
-
 	ConfigureNotificationBroker(brokerUrls, clientId, notificationBroker)
 
-	// ConfigureAlertBroker(brokerUrls, clientId, alertBroker)
-
 }
 
-// configuring notifications broker topic
-func ConfigureNotificationBroker(kafkaBrokerUrls []string, clientId string, topic string) (*kafka.Writer, error) {
+// configuring notifications broker  topic connection
+func ConfigureNotificationBroker(kafkaBrokerUrls []string, clientId string, topic string) {
 
 	fmt.Println(kafkaBrokerUrls, clientId, topic)
-	dialer := &kafka.Dialer{
-		Timeout:  10 * time.Second,
-		ClientID: clientId,
+	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", topic, 0)
+	if err != nil {
+		log.Fatal("failed to dial leader:", err)
 	}
 
-	config := kafka.WriterConfig{
-		Brokers:          kafkaBrokerUrls,
-		Topic:            topic,
-		Balancer:         &kafka.LeastBytes{},
-		Dialer:           dialer,
-		WriteTimeout:     10 * time.Second,
-		ReadTimeout:      10 * time.Second,
-		CompressionCodec: snappy.NewCompressionCodec(),
-	}
-	Connections.NotificationWriter = kafka.NewWriter(config)
-
-	return Connections.NotificationWriter, nil
+	Connections.NotificationConn = conn
 }
-
-// // configuring alert broker topic
-// func ConfigureAlertBroker(kafkaBrokerUrls []string, clientId string, topic string) {
-// 	dialer := &kafka.Dialer{
-// 		Timeout:  10 * time.Second,
-// 		ClientID: clientId,
-// 	}
-
-// 	config := kafka.WriterConfig{
-// 		Brokers:          kafkaBrokerUrls,
-// 		Topic:            topic,
-// 		Balancer:         &kafka.LeastBytes{},
-// 		Dialer:           dialer,
-// 		WriteTimeout:     10 * time.Second,
-// 		ReadTimeout:      10 * time.Second,
-// 		CompressionCodec: snappy.NewCompressionCodec(),
-// 	}
-// 	Connections.AlertWriter = kafka.NewWriter(config)
-// }
