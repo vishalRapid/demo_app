@@ -6,8 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
 	"github.com/vishalrana9915/demo_app/pkg/algolia"
 	"github.com/vishalrana9915/demo_app/pkg/databaseConnector"
+	"github.com/vishalrana9915/demo_app/pkg/ratelimiter"
 	"github.com/vishalrana9915/demo_app/pkg/redisConnector"
 	"github.com/vishalrana9915/demo_app/pkg/responseHandler"
 	"github.com/vishalrana9915/demo_app/pkg/routes"
@@ -41,6 +43,13 @@ func main() {
 	algolia.Adapter.SetupAlgolia()
 
 	router := gin.Default()
+
+	rateLimit := ratelimiter.SetupLimiter()
+
+	// Create a new middleware with the limiter instance.
+	middleware := mgin.NewMiddleware(rateLimit)
+	// setting up the limiter
+	router.Use(middleware)
 
 	port := os.Getenv("SERVER_PORT")
 
