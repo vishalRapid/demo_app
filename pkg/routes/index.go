@@ -36,17 +36,23 @@ func SetupRouter(router *gin.Engine) {
 
 	router.PUT("/profile/tags", commonMiddleware.AuthGuard(), users.UpdateTags)
 
+	// updating profile for user
+	router.PUT("/profile/me", commonMiddleware.AuthGuard(), users.UpdateProfile)
+
 	// blogs routes
 
 	router.POST("/blogs/create", commonMiddleware.AuthGuard(), blogApi.CreateBlog)
 
-	router.PUT("/blogs/:slug", commonMiddleware.AuthGuard(), blogApi.UpdateBlog)
-
 	router.GET("/blogs/:slug", blogApi.FetchBlog)
+
+	router.PUT("/blogs/:id", commonMiddleware.AuthGuard(), blogApi.UpdateBlog)
 
 	router.GET("/tags", tagsApi.FetchTags)
 
 	router.GET("/blogs/timeline", commonMiddleware.OptionalAuthGuard(), blogApi.FetchBlogs)
+
+	// fetch user blogs
+	router.GET("/user/blogs/:id", blogApi.FetchUserBlogs)
 
 	// upload media
 

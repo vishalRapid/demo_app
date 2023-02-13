@@ -34,3 +34,7 @@
 ## Architecture
 
 <img src="./assets/architecture.jpeg">
+
+## Running Kafka and Zookeeper
+
+`docker-compose up .`
