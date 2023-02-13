@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -43,10 +44,12 @@ func main() {
 	// setup search
 	algolia.Adapter.SetupAlgolia()
 
-	// making connection to the broker
+	ctx := context.Background()
+
 	broker.SetupBroker()
 
-	// closing broker connection
+	go broker.ReadMessages(ctx)
+
 	defer broker.Connections.NotificationConn.Close()
 
 	router := gin.Default()
