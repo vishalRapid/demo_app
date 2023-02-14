@@ -47,3 +47,12 @@ type DatabaseBlog struct {
 	STATUS       int       `json:"status" bson:"status"`
 	FEATUREIMAGE string    `json:"featureImage" bson:"featureImage"`
 }
+
+type BlogHistory struct {
+	ID        primitive.ObjectID `json:"_id" bson:"_id"`
+	USERID    primitive.ObjectID `json:"userId" bson:userId"`
+	AUTHOR    primitive.ObjectID `json:"author" bson:"author"`
+	BLOGID    primitive.ObjectID `json:"blogId" bson:"blogId"`
+	TAGS      []string           `json:"tags" bson:"tags"`
+	CREATEDAT time.Time          `json:"created_at" bson:"created_at"`
+}

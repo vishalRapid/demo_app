@@ -122,3 +122,15 @@ func UpdateBlog(query bson.M, update bson.M) (blogInterface.Blog, string) {
 	}
 	return blogInfo, ""
 }
+
+// update history for user
+func CreateHistory(history blogInterface.BlogHistory) interface{} {
+
+	blogHistoryResult, err := Adapter.db.Collection(constant.BLOGHISTORY).InsertOne(context.TODO(), history)
+
+	if err != nil {
+
+		panic(err)
+	}
+	return blogHistoryResult
+}

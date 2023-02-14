@@ -43,7 +43,7 @@ func SetupRouter(router *gin.Engine) {
 
 	router.POST("/blogs/create", commonMiddleware.AuthGuard(), blogApi.CreateBlog)
 
-	router.GET("/blogs/:slug", blogApi.FetchBlog)
+	router.GET("/blogs/:slug", commonMiddleware.OptionalAuthGuard(), blogApi.FetchBlog)
 
 	router.PUT("/blogs/:id", commonMiddleware.AuthGuard(), blogApi.UpdateBlog)
 

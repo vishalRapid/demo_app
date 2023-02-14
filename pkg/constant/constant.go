@@ -27,6 +27,7 @@ var (
 var (
 	USERCOLLECTION = "users"
 	BLOGCOLLECTION = "blogs"
+	BLOGHISTORY    = "blogs_history"
 )
 
 var (
